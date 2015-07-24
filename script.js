@@ -7,13 +7,13 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
 // for(var index in geometry.vertices) {
 // 	geometry.vertices[index].x *= Math.random();
 // 	geometry.vertices[index].y *= Math.random();
 // 	geometry.vertices[index].x *= Math.random();
 // }
-var material = new THREE.MeshPhongMaterial( { color: 0x00ff00, shininess: 200 } );
+var material = new THREE.MeshNormalMaterial( { color: 0x00ff00, shininess: 200 } );
 
 var cube = new THREE.Mesh( geometry, material );
 
@@ -29,9 +29,11 @@ var superGeometry = new THREE.Geometry();
 var render = function () {
 	requestAnimationFrame( render );
 
-	// cube.rotation.x += 0.01;
-	// cube.rotation.y += 0.01;
-	// cube.rotation.z += 0.01;
+	cube.rotation.x += 0.01;
+	cube.rotation.y += 0.01;
+	cube.rotation.z += 0.01;
+
+	cube.scale.multiplyScalar(1.001);
 	// light.position.x += 1;
 
 	// sup.geometry.vertices[0].x += 0.01;
@@ -42,45 +44,45 @@ var render = function () {
 	renderer.render(scene, camera);
 };
 
-var WIDTH = 4;
-var HEIGHT = 4;
+var WIDTH = 40;
+var HEIGHT = 40;
 var VERTICES = [];
-
-// var P1 = {
-// 	a : 1,
-// 	b : 1,
-// 	m : 11.35,
-// 	n1: 7.3,
-// 	n2: -1.68,
-// 	n3: 3.31
-// };
-
-// var P2 = {
-// 	a : 1,
-// 	b : 1,
-// 	m : 9.08,
-// 	n1: 2.2,
-// 	n2: 0.53,
-// 	n3: 2.02
-// };
 
 var P1 = {
 	a : 1,
 	b : 1,
-	m : 2,
-	n1: 2,
-	n2: 2,
-	n3: 2
+	m : 11.35,
+	n1: 7.3,
+	n2: -1.68,
+	n3: 3.31
 };
 
 var P2 = {
 	a : 1,
 	b : 1,
-	m : 2,
-	n1: 2,
-	n2: 2,
-	n3: 2
+	m : 9.08,
+	n1: 2.2,
+	n2: 0.53,
+	n3: 2.02
 };
+
+// var P1 = {
+// 	a : 1,
+// 	b : 1,
+// 	m : 2,
+// 	n1: 2,
+// 	n2: 2,
+// 	n3: 2
+// };
+
+// var P2 = {
+// 	a : 1,
+// 	b : 1,
+// 	m : 2,
+// 	n1: 2,
+// 	n2: 2,
+// 	n3: 2
+// };
 
 function GenerateMesh() {
 	GenerateMeshVertices(P1, P2);
@@ -98,6 +100,7 @@ function GenerateMesh() {
 					c = ii * WIDTH;
 				}
 				superGeometry.faces.push( new THREE.Face3( a, b, c));
+				superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
 			}
 		}
 		// Upward rows
@@ -110,6 +113,7 @@ function GenerateMesh() {
 					b = ii * WIDTH;
 				}
 				superGeometry.faces.push( new THREE.Face3( a, b, c));
+				superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
 			}
 		}
 	}
@@ -125,6 +129,7 @@ function GenerateMesh() {
 	}
 
 	superGeometry.computeBoundingSphere();
+	superGeometry.computeFaceNormals();
 }
 
 function GenerateMeshVertices(p1, p2) {
@@ -171,11 +176,11 @@ function GenerateMeshVertices(p1, p2) {
 
 	var scale = 0.5 / Math.sqrt(lengthMaxSq);
 
-	// for(var ii = 0; ii < VERTICES.length; ii++) {
-	// 	VERTICES[ii].multiplyScalar(scale);
-	// }
+	VERTICES.push(VERTICES[0].multiplyScalar(-10));
 
-	VERTICES.push(VERTICES[0]);
+	for(var ii = 0; ii < VERTICES.length; ii++) {
+		VERTICES[ii].multiplyScalar(scale);
+	}
 } 
 
 GenerateMesh();
