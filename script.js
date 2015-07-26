@@ -22,7 +22,7 @@ light.position.set(-80,80,80);
 // scene.add( cube );
 scene.add( light);
 
-camera.position.z = 5;
+camera.position.z = 1;
 
 var superGeometry = new THREE.Geometry();
 
@@ -48,81 +48,82 @@ var WIDTH = 40;
 var HEIGHT = 40;
 var VERTICES = [];
 
-var P1 = {
-	a : 1,
-	b : 1,
-	m : 11.35,
-	n1: 7.3,
-	n2: -1.68,
-	n3: 3.31
-};
-
-var P2 = {
-	a : 1,
-	b : 1,
-	m : 9.08,
-	n1: 2.2,
-	n2: 0.53,
-	n3: 2.02
-};
-
 // var P1 = {
 // 	a : 1,
 // 	b : 1,
-// 	m : 2,
-// 	n1: 2,
-// 	n2: 2,
-// 	n3: 2
+// 	m : 11.35,
+// 	n1: 7.3,
+// 	n2: -1.68,
+// 	n3: 3.31
 // };
 
 // var P2 = {
 // 	a : 1,
 // 	b : 1,
-// 	m : 2,
-// 	n1: 2,
-// 	n2: 2,
-// 	n3: 2
+// 	m : 9.08,
+// 	n1: 2.2,
+// 	n2: 0.53,
+// 	n3: 2.02
 // };
+
+var P1 = {
+	a : 1,
+	b : 1,
+	m : 2,
+	n1: 2,
+	n2: 2,
+	n3: 2
+};
+
+var P2 = {
+	a : 1,
+	b : 1,
+	m : 2,
+	n1: 2,
+	n2: 2,
+	n3: 2
+};
 
 function GenerateMesh() {
 	GenerateMeshVertices(P1, P2);
 	superGeometry.vertices = VERTICES;
 
-	for(var ii = 0; ii < HEIGHT; ii++) {
-		// Downward rows
-		if(ii != 0) {
-			for(var jj = ii * WIDTH; jj < (ii + 1) * WIDTH; jj++) {
-				var a = jj;
-				var b = jj + 1 - WIDTH;
-				var c = jj + 1;
-				if(jj == (ii + 1) * WIDTH - 1) {
-					b = ii * WIDTH - WIDTH;
-					c = ii * WIDTH;
-				}
-				superGeometry.faces.push( new THREE.Face3( a, b, c));
-				superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
-			}
-		}
-		// Upward rows
-		if(ii != HEIGHT - 1) {
-			for(var jj = ii * WIDTH; jj < (ii + 1) * WIDTH; jj++) {
-				var a = jj;
-				var b = jj + 1;
-				var c = jj + WIDTH;
-				if(jj == (ii + 1) * WIDTH - 1) {
-					b = ii * WIDTH;
-				}
-				superGeometry.faces.push( new THREE.Face3( a, b, c));
-				superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
-			}
-		}
-	}
+	// for(var ii = 0; ii < HEIGHT; ii++) {
+	// 	// Downward rows
+	// 	if(ii != 0) {
+	// 		for(var jj = ii * WIDTH; jj < (ii + 1) * WIDTH; jj++) {
+	// 			var a = jj;
+	// 			var b = jj + 1 - WIDTH;
+	// 			var c = jj + 1;
+	// 			if(jj == (ii + 1) * WIDTH - 1) {
+	// 				b = ii * WIDTH - WIDTH;
+	// 				c = ii * WIDTH;
+	// 			}
+	// 			superGeometry.faces.push( new THREE.Face3( a, b, c));
+	// 			// superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
+	// 		}
+	// 	}
+	// 	// Upward rows
+	// 	if(ii != HEIGHT - 1) {
+	// 		for(var jj = ii * WIDTH; jj < (ii + 1) * WIDTH; jj++) {
+	// 			var a = jj;
+	// 			var b = jj + 1;
+	// 			var c = jj + WIDTH;
+	// 			if(jj == (ii + 1) * WIDTH - 1) {
+	// 				b = ii * WIDTH;
+	// 			}
+	// 			superGeometry.faces.push( new THREE.Face3( a, b, c));
+	// 			// superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
+	// 		}
+	// 	}
+	// }
 	// Seal the top!
-	for(var ii = VERTICES.length - WIDTH - 1; ii < VERTICES.length - 1; ii++) {
+	for(var ii = 0; ii < VERTICES.length - 1; ii++) {
 		var a = ii;
 		var b = ii + 1;
 		var c = VERTICES.length - 1;
-		if(ii = VERTICES.length - 2) {
+		// var c = ii + 2;
+		if(ii == VERTICES.length - 2) {
 			b = VERTICES.length - WIDTH - 1;
 		}
 		superGeometry.faces.push( new THREE.Face3( a,b,c));  
@@ -176,11 +177,13 @@ function GenerateMeshVertices(p1, p2) {
 
 	var scale = 0.5 / Math.sqrt(lengthMaxSq);
 
-	VERTICES.push(VERTICES[0].multiplyScalar(-10));
+	
 
 	for(var ii = 0; ii < VERTICES.length; ii++) {
 		VERTICES[ii].multiplyScalar(scale);
 	}
+
+	// VERTICES.push(VERTICES[0].multiplyScalar(-1));
 } 
 
 GenerateMesh();
