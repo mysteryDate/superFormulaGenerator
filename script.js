@@ -29,11 +29,11 @@ var superGeometry = new THREE.Geometry();
 var render = function () {
 	requestAnimationFrame( render );
 
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
-	cube.rotation.z += 0.01;
+	// cube.rotation.x += 0.01;
+	// cube.rotation.y += 0.01;
+	// cube.rotation.z += 0.01;
 
-	cube.scale.multiplyScalar(1.001);
+	// cube.scale.multiplyScalar(1.001);
 	// light.position.x += 1;
 
 	// sup.geometry.vertices[0].x += 0.01;
@@ -44,14 +44,14 @@ var render = function () {
 	renderer.render(scene, camera);
 };
 
-var WIDTH = 40;
-var HEIGHT = 40;
+var WIDTH = 50;
+var HEIGHT = 50;
 var VERTICES = [];
 
 // var P1 = {
 // 	a : 1,
 // 	b : 1,
-// 	m : 11.35,
+// 	m : 11.25,
 // 	n1: 7.3,
 // 	n2: -1.68,
 // 	n3: 3.31
@@ -88,37 +88,37 @@ function GenerateMesh() {
 	GenerateMeshVertices(P1, P2);
 	superGeometry.vertices = VERTICES;
 
-	// for(var ii = 0; ii < HEIGHT; ii++) {
-	// 	// Downward rows
-	// 	if(ii != 0) {
-	// 		for(var jj = ii * WIDTH; jj < (ii + 1) * WIDTH; jj++) {
-	// 			var a = jj;
-	// 			var b = jj + 1 - WIDTH;
-	// 			var c = jj + 1;
-	// 			if(jj == (ii + 1) * WIDTH - 1) {
-	// 				b = ii * WIDTH - WIDTH;
-	// 				c = ii * WIDTH;
-	// 			}
-	// 			superGeometry.faces.push( new THREE.Face3( a, b, c));
-	// 			// superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
-	// 		}
-	// 	}
-	// 	// Upward rows
-	// 	if(ii != HEIGHT - 1) {
-	// 		for(var jj = ii * WIDTH; jj < (ii + 1) * WIDTH; jj++) {
-	// 			var a = jj;
-	// 			var b = jj + 1;
-	// 			var c = jj + WIDTH;
-	// 			if(jj == (ii + 1) * WIDTH - 1) {
-	// 				b = ii * WIDTH;
-	// 			}
-	// 			superGeometry.faces.push( new THREE.Face3( a, b, c));
-	// 			// superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
-	// 		}
-	// 	}
-	// }
+	for(var ii = 0; ii < HEIGHT; ii++) {
+		// Downward rows
+		if(ii != 0) {
+			for(var jj = ii * WIDTH; jj < (ii + 1) * WIDTH; jj++) {
+				var a = jj;
+				var b = jj + 1 - WIDTH;
+				var c = jj + 1;
+				if(jj == (ii + 1) * WIDTH - 1) {
+					b = ii * WIDTH - WIDTH;
+					c = ii * WIDTH;
+				}
+				superGeometry.faces.push( new THREE.Face3( a, b, c));
+				// superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
+			}
+		}
+		// Upward rows
+		if(ii != HEIGHT - 1) {
+			for(var jj = ii * WIDTH; jj < (ii + 1) * WIDTH; jj++) {
+				var a = jj;
+				var b = jj + 1;
+				var c = jj + WIDTH;
+				if(jj == (ii + 1) * WIDTH - 1) {
+					b = ii * WIDTH;
+				}
+				superGeometry.faces.push( new THREE.Face3( a, b, c));
+				// superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
+			}
+		}
+	}
 	// Seal the top!
-	for(var ii = 0; ii < VERTICES.length - 1; ii++) {
+	for(var ii = VERTICES.length - WIDTH - 2; ii < VERTICES.length - 1; ii++) {
 		var a = ii;
 		var b = ii + 1;
 		var c = VERTICES.length - 1;
@@ -131,6 +131,7 @@ function GenerateMesh() {
 
 	superGeometry.computeBoundingSphere();
 	superGeometry.computeFaceNormals();
+	superGeometry.computeVertexNormals();
 }
 
 function GenerateMeshVertices(p1, p2) {
@@ -183,7 +184,8 @@ function GenerateMeshVertices(p1, p2) {
 		VERTICES[ii].multiplyScalar(scale);
 	}
 
-	// VERTICES.push(VERTICES[0].multiplyScalar(-1));
+	var finalVertex = new THREE.Vector3(VERTICES[0].x, VERTICES[0].y, VERTICES[0].z);
+	VERTICES.push(finalVertex.multiplyScalar(-1));
 } 
 
 GenerateMesh();
