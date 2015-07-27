@@ -56,8 +56,8 @@ var render = function () {
 	// superGeometry.vertices = VERTICES;
 
 	superGeometry.computeBoundingSphere();
-	superGeometry.computeFaceNormals();
-	superGeometry.computeVertexNormals();
+	// superGeometry.computeFaceNormals();
+	// superGeometry.computeVertexNormals();
 	superGeometry.verticesNeedUpdate = true;
 
 	controls.update();
@@ -68,6 +68,22 @@ var render = function () {
 var WIDTH = 80;
 var HEIGHT = 80;
 var VERTICES = [];
+var r1 = [];
+var r2 = [];
+var thetas = [];
+var phis = [];
+
+for(var ii = 0; ii < WIDTH * HEIGHT + 1; ii++) {
+	VERTICES.push(new THREE.Vector3(0,0,0));
+}
+for(var ii = 0; ii < WIDTH; ii++) {
+	r1.push(0);
+	thetas.push(0);
+}
+for(var ii = 0; ii < HEIGHT; ii++) {
+	r2.push(0);
+	phis.push(0);
+}
 
 var P1n = {
 	a : 1,
@@ -157,13 +173,7 @@ function GenerateMesh() {
 	superGeometry.verticesNeedUpdate = true;
 }
 
-function GenerateMeshVertices(p1, p2) {
-	var r1 = [];
-	var r2 = [];
-	var thetas = [];
-	var phis = [];
-
-	VERTICES = [];
+function GenerateMeshVertices(p1, p2) {	
 
 	// Generate longitudinal points [-pi to pi] (full circle)
 	for (var ii = 0; ii < WIDTH; ii++) {
@@ -171,8 +181,8 @@ function GenerateMeshVertices(p1, p2) {
 		var r 	=  Math.pow( Math.abs( Math.cos( p1.m * theta / 4 ) / p1.a ), p1.n2 );
 		r 		+= Math.pow( Math.abs( Math.sin( p1.m * theta / 4 ) / p1.b ), p1.n3 );
 		r 		=  Math.pow( r, -1 / p1.n1 );
-		thetas.push(theta);
-		r1.push(r);
+		thetas[ii] = theta;
+		r1[ii] = r;
 	};
 
 	// Generate latitudinal points [-pi/2 to pi/2] (semi-circle)
@@ -181,8 +191,8 @@ function GenerateMeshVertices(p1, p2) {
 		var r 	=  Math.pow( Math.abs( Math.cos( p2.m * phi / 4 ) / p2.a ), p2.n2 );
 		r 		+= Math.pow( Math.abs( Math.sin( p2.m * phi / 4 ) / p2.b ), p2.n3 );
 		r 		=  Math.pow( r, -1 / p2.n1 );
-		phis.push(phi);
-		r2.push(r);
+		phis[ii] = phi;
+		r2[ii] = r;
 	}
 
 	var lengthMaxSq = 0;
@@ -193,16 +203,13 @@ function GenerateMeshVertices(p1, p2) {
 			var x = r1[jj] * Math.cos(thetas[jj]) * r2[ii] * Math.cos(phis[ii]);
 			var y = r1[jj] * Math.sin(thetas[jj]) * r2[ii] * Math.cos(phis[ii]);
 			var z = r2[ii] * Math.sin(phis[ii]);
-			var vertex = new THREE.Vector3(x,y,z);
-			lengthMaxSq = Math.max(lengthMaxSq, vertex.lengthSq() );
-			VERTICES.push(vertex);
+			lengthMaxSq = Math.max(lengthMaxSq, x * x + y * y + z * z );
+			VERTICES[ii * WIDTH + jj].set(x,y,z);
 		}
 	}
 
 	var scale = 0.5 / Math.sqrt(lengthMaxSq);
-
 	
-
 	for(var ii = 0; ii < VERTICES.length; ii++) {
 		VERTICES[ii].multiplyScalar(scale);
 		// if(superGeometry.vertices[ii]) {
@@ -210,8 +217,8 @@ function GenerateMeshVertices(p1, p2) {
 		// }
 	}
 
-	var finalVertex = new THREE.Vector3(VERTICES[0].x, VERTICES[0].y, VERTICES[0].z);
-	VERTICES.push(finalVertex.multiplyScalar(-1));
+	VERTICES[VERTICES.length - 1].set(VERTICES[0].x, VERTICES[0].y, VERTICES[0].z);	
+	VERTICES[VERTICES.length - 1].multiplyScalar(-1);
 } 
 
 GenerateMesh();
