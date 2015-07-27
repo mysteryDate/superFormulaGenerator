@@ -50,7 +50,10 @@ var render = function () {
 		P2[i] = ((1 - lerpValue) * current + lerpValue * goal);
 	}
 	GenerateMeshVertices(P1, P2);
-	superGeometry.vertices = VERTICES;
+	for(var ii = 0; ii < VERTICES.length; ii++) {
+		superGeometry.vertices[ii].lerp(VERTICES[ii], 0.1);
+	}
+	// superGeometry.vertices = VERTICES;
 
 	superGeometry.computeBoundingSphere();
 	superGeometry.computeFaceNormals();
@@ -202,6 +205,9 @@ function GenerateMeshVertices(p1, p2) {
 
 	for(var ii = 0; ii < VERTICES.length; ii++) {
 		VERTICES[ii].multiplyScalar(scale);
+		// if(superGeometry.vertices[ii]) {
+		// 	VERTICES[ii].lerp(superGeometry.vertices[ii], 0.1);
+		// }
 	}
 
 	var finalVertex = new THREE.Vector3(VERTICES[0].x, VERTICES[0].y, VERTICES[0].z);
@@ -216,4 +222,6 @@ var getGUIValues = function() {
 
 }
 
-render();  
+window.setTimeout(function(){ 
+	render();  
+}, 0);
