@@ -6,6 +6,7 @@ var controls = new THREE.OrbitControls( camera);
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+$("canvas").attr("id","viewer");
 
 var geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
 // for(var index in geometry.vertices) {
@@ -31,8 +32,8 @@ var lerpValue = 0.01;
 var render = function () {
 	requestAnimationFrame( render );
 
-	sup.rotation.x += 0.01;
-	sup.rotation.y += 0.01;
+	// sup.rotation.x += 0.01;
+	// sup.rotation.y += 0.01;
 	// sup.rotation.z += 0.01;
 
 	// cube.scale.multiplyScalar(1.001);
@@ -225,9 +226,12 @@ GenerateMesh();
 var sup = new THREE.Mesh(superGeometry, material);
 scene.add(sup);
 
-var getGUIValues = function() {
-
-}
+// $(".dial").dial();
+$(".dial").dial({
+                'change':function(e){
+                        P1n.m = e;
+                    }
+                });
 
 window.setTimeout(function(){ 
 	render();  
