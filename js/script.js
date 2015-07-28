@@ -1,15 +1,16 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-var controls = new THREE.OrbitControls( camera);
+var container = document.getElementById("container");
+var controls = new THREE.OrbitControls( camera, container);
 
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+container.appendChild( renderer.domElement );
 $("canvas").attr("id","viewer");
 
 var geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
-// for(var index in geometry.vertices) {
+// for(var index in geometry.vertices) 	{
 // 	geometry.vertices[index].x *= Math.random();
 // 	geometry.vertices[index].y *= Math.random();
 // 	geometry.vertices[index].x *= Math.random();
@@ -52,7 +53,7 @@ var render = function () {
 	}
 	GenerateMeshVertices(P1, P2);
 	for(var ii = 0; ii < VERTICES.length; ii++) {
-		superGeometry.vertices[ii].lerp(VERTICES[ii], 0.1);
+		superGeometry.vertices[ii].lerp(VERTICES[ii], 0);
 	}
 	// superGeometry.vertices = VERTICES;
 
@@ -227,11 +228,21 @@ var sup = new THREE.Mesh(superGeometry, material);
 scene.add(sup);
 
 // $(".dial").dial();
-$(".dial").dial({
+$(".dial#m1").dial({
                 'change':function(e){
                         P1n.m = e;
                     }
                 });
+$(".dial#m2").dial({
+                'change':function(e){
+                        P2n.m = e;
+                    }
+                });
+
+$("#GUI").on("mousedown", function(e){
+	console.log(e);
+	e.stopPropagation();
+})
 
 window.setTimeout(function(){ 
 	render();  
