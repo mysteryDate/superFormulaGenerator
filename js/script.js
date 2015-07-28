@@ -232,22 +232,42 @@ GenerateMesh();
 var sup = new THREE.Mesh(superGeometry, material);
 scene.add(sup);
 
-// $(".dial").dial();
-$(".dial#m1").dial({
+$("#m1").dial({
                 'change':function(e){
                         P1n.m = e;
                     }
+                
                 });
-$(".dial#m2").dial({
+$("#m2").dial({
                 'change':function(e){
                         P2n.m = e;
                     }
                 });
 
+var $pad = $(".pad")
+            .xy({
+                    displayPrevious:true
+                    , min : 0
+                    , max : 24
+                    , fgColor: "blue"
+                    , bgColor:"#EEEEEE"
+                    , change : function (value) {
+                        P1n.m = value[0];
+                        P2n.m = value[1];
+                    }
+                })
+            .css({'border':'5px solid #BBB'});
+
+$(document).on('keydown', function(e) {
+	if(e.which == 13) {
+		P1n.m = $("#m1").val();
+		P2n.m = $("#m2").val();
+	}
+});
+
 $("#GUI").on("mousedown", function(e){
-	console.log(e);
 	e.stopPropagation();
-})
+});
 
 window.setTimeout(function(){ 
 	render();  

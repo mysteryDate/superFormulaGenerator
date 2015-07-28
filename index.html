@@ -12,9 +12,18 @@
 </head>
 <body>
 	<div id="GUI">
-		<input type="text" value="1" class="dial" id="m1">
-		<input type="text" value="1" class="dial" id="m2">
+		<input type="text" class="dial" id="m1">
+		<input type="text" class="dial" id="m2">
+		<div style="float:left;width:200px;padding:30px">
+		    <div style="margin-bottom:10px">XY</div>
+		    <fieldset class="pad" data-width="180" data-height="180">
+		        <legend>XY Pad</legend>
+		        x : <input name="x" value=0>
+		        y : <input name="y" value=0>
+		    </fieldset>
+		</div>
 	</div>
+
 	<div id="container"></div>
 	<script type="text/javascript" src="js/script.js"></script>
 </body>
