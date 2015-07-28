@@ -52,8 +52,8 @@ var render = function () {
 		P2[i] = ((1 - lerpValue) * current + lerpValue * goal);
 	}
 	GenerateMeshVertices(P1, P2);
-	for(var ii = 0; ii < VERTICES.length; ii++) {
-		superGeometry.vertices[ii].lerp(VERTICES[ii], 0);
+	for(var ii = 0; ii < tempVertices.length; ii++) {
+		superGeometry.vertices[ii].lerp(tempVertices[ii], 0.1);
 	}
 	// superGeometry.vertices = VERTICES;
 
@@ -70,6 +70,7 @@ var render = function () {
 var WIDTH = 80;
 var HEIGHT = 80;
 var VERTICES = [];
+var tempVertices = [];
 var r1 = [];
 var r2 = [];
 var thetas = [];
@@ -77,6 +78,7 @@ var phis = [];
 
 for(var ii = 0; ii < WIDTH * HEIGHT + 1; ii++) {
 	VERTICES.push(new THREE.Vector3(0,0,0));
+	tempVertices.push(new THREE.Vector3(0,0,0));
 }
 for(var ii = 0; ii < WIDTH; ii++) {
 	r1.push(0);
@@ -126,6 +128,9 @@ var P2 = {
 
 function GenerateMesh() {
 	GenerateMeshVertices(P1, P2);
+	for(var ii = 0; ii < tempVertices.length; ii++) {
+		VERTICES[ii].set(tempVertices[ii].x,tempVertices[ii].y,tempVertices[ii].z);
+	}
 	superGeometry.vertices = VERTICES;
 
 	for(var ii = 0; ii < HEIGHT; ii++) {
@@ -206,21 +211,21 @@ function GenerateMeshVertices(p1, p2) {
 			var y = r1[jj] * Math.sin(thetas[jj]) * r2[ii] * Math.cos(phis[ii]);
 			var z = r2[ii] * Math.sin(phis[ii]);
 			lengthMaxSq = Math.max(lengthMaxSq, x * x + y * y + z * z );
-			VERTICES[ii * WIDTH + jj].set(x,y,z);
+			tempVertices[ii * WIDTH + jj].set(x,y,z);
 		}
 	}
 
 	var scale = 0.5 / Math.sqrt(lengthMaxSq);
 	
-	for(var ii = 0; ii < VERTICES.length; ii++) {
-		VERTICES[ii].multiplyScalar(scale);
+	for(var ii = 0; ii < tempVertices.length; ii++) {
+		tempVertices[ii].multiplyScalar(scale);
 		// if(superGeometry.vertices[ii]) {
-		// 	VERTICES[ii].lerp(superGeometry.vertices[ii], 0.1);
+		// 	tempVertices[ii].lerp(superGeometry.vertices[ii], 0.1);
 		// }
 	}
 
-	VERTICES[VERTICES.length - 1].set(VERTICES[0].x, VERTICES[0].y, VERTICES[0].z);	
-	VERTICES[VERTICES.length - 1].multiplyScalar(-1);
+	tempVertices[tempVertices.length - 1].set(tempVertices[0].x, tempVertices[0].y, tempVertices[0].z);	
+	tempVertices[tempVertices.length - 1].multiplyScalar(-1);
 } 
 
 GenerateMesh();
