@@ -76,7 +76,7 @@ for(var ii = 0; ii < HEIGHT; ii++) {
 
 var CONTROLS = {
 	rotate : false,
-	lerpSpeed : 0.01
+	lerpSpeed : 0.05
 };
 
 var P1n = {
