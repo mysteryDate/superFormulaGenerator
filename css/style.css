@@ -5,17 +5,25 @@ html, body {
 
 body { 
 	margin: 0; 
-	/*overflow: hidden;*/
+	overflow: hidden;
 }
 canvas#viewer { 
 	width: 100%; 
 	height: 100% 
 }
 
-#GUI {
-	/*height: 30%;*/
+/*#GUI {
+	height: 30%;
     width: 25%;
     background-color: pink;
     position: absolute;
     border-radius: 10%;
+}
+
+.dg.main.a {
+	background-color: pink;
+}*/
+
+.guidat input {
+	font: 20px helvetica;
 }

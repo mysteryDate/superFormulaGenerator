@@ -1,12 +1,12 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 var container = document.getElementById("container");
-var controls = new THREE.OrbitControls( camera, container);
 
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 container.appendChild( renderer.domElement );
+var controls = new THREE.OrbitControls( camera, renderer.domElement);
 $("canvas").attr("id","viewer");
 
 var geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
@@ -24,17 +24,20 @@ light.position.set(-80,80,80);
 // scene.add( cube );
 scene.add( light);
 
-camera.position.z = 1;
+camera.position.z = .707;
+camera.position.y = -0.707;
 
 var superGeometry = new THREE.Geometry();
-
-var lerpValue = 0.01;
 
 var render = function () {
 	requestAnimationFrame( render );
 
-	// sup.rotation.x += 0.01;
-	// sup.rotation.y += 0.01;
+	if(CONTROLS.rotate) {
+		sup.rotation.x += 0.01;
+		sup.rotation.y += 0.01;
+	}
+
+	var lerpValue = CONTROLS.lerpSpeed;
 	// sup.rotation.z += 0.01;
 
 	// cube.scale.multiplyScalar(1.001);
@@ -89,13 +92,17 @@ for(var ii = 0; ii < HEIGHT; ii++) {
 	phis.push(0);
 }
 
+var CONTROLS = {
+	rotate : false,
+	lerpSpeed : 0.01
+};
+
 var P1n = {
-	a : 1,
-	b : 1,
+	a : 1.0,
+	b : 1.0,
 	m : 11.25,
-	// m : 1,
 	n1: 7.3,
-	n2: -1.68,
+	n2: 1,
 	n3: 3.31
 };
 
@@ -232,43 +239,40 @@ GenerateMesh();
 var sup = new THREE.Mesh(superGeometry, material);
 scene.add(sup);
 
-$("#m1").dial({
-                'change':function(e){
-                        P1n.m = e;
-                    }
-                
-                });
-$("#m2").dial({
-                'change':function(e){
-                        P2n.m = e;
-                    }
-                });
 
-var $pad = $(".pad")
-            .xy({
-                    displayPrevious:true
-                    , min : 0
-                    , max : 24
-                    , fgColor: "blue"
-                    , bgColor:"#EEEEEE"
-                    , change : function (value) {
-                        P1n.m = value[0];
-                        P2n.m = value[1];
-                    }
-                })
-            .css({'border':'5px solid #BBB'});
+CreateGUI = function() {
+	var gui = new dat.GUI();
+	// for(var i in P1n) {
+	// 	f1.add(P1n, i.toString()).min(1).max(50);
+	// 	f2.add(P2n, i.toString()).min(1).max(50);
+	// }
+	gui.add(P1n, 'm').min(0).max(50).name("Lobes");
+	gui.add(P2n, 'm').min(0).max(50).name("Ridges");
+	var f1 = gui.addFolder("Theta");
+	var f2 = gui.addFolder("Phi");
+	f1.add(P1n, 'a').min(0.1).max(2).name("Cos Multiplier");
+	f1.add(P1n, 'n2').min(-10).max(10).listen().name("Cos Power");
+	f1.add(P1n, 'b').min(0.1).max(2).name("Sin Multiplier");;
+	f1.add(P1n, 'n3').min(-10).max(10).name("Sin Power");
+	f1.add(P1n, 'n1').min(1).max(100).name("Theta Power");
+	f2.add(P2n, 'a').min(0.1).max(2).name("Cos Multiplier");
+	f2.add(P2n, 'n2').min(-10).max(10).listen().name("Cos Power");
+	f2.add(P2n, 'b').min(0.1).max(2).name("Sin Multiplier");;
+	f2.add(P2n, 'n3').min(-10).max(10).name("Sin Power");
+	f2.add(P2n, 'n1').min(1).max(100).name("Phi Power");
+	f1.open();
+	f2.open();
+	gui.add(CONTROLS, "lerpSpeed").min(0.01).max(1).name("Interpolation Speed");
+	gui.add(CONTROLS, "rotate");
+}
 
-$(document).on('keydown', function(e) {
-	if(e.which == 13) {
-		P1n.m = $("#m1").val();
-		P2n.m = $("#m2").val();
-	}
-});
+CreateGUI();
 
-$("#GUI").on("mousedown", function(e){
+$(".dg").on("mousedown", function(e){
 	e.stopPropagation();
 });
 
+P1n.n2 = -1.68;
 window.setTimeout(function(){ 
 	render();  
 }, 0);
