@@ -262,8 +262,8 @@ CreateGUI = function() {
 	f2.add(P2n, 'n1').min(1).max(100).name("Phi Power");
 	f1.open();
 	f2.open();
-	gui.add(CONTROLS, "lerpSpeed").min(0.01).max(1).name("Interpolation Speed");
-	gui.add(CONTROLS, "rotate");
+	gui.add(CONTROLS, "lerpSpeed").min(0.01).max(1).name("Lerp Speed");
+	gui.add(CONTROLS, "rotate").name("Auto-rotate");
 }
 
 CreateGUI();
