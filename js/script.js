@@ -1,8 +1,7 @@
+
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 var container = document.getElementById("container");
-
-
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 container.appendChild( renderer.domElement );
@@ -10,19 +9,12 @@ var controls = new THREE.OrbitControls( camera, renderer.domElement);
 $("canvas").attr("id","viewer");
 
 var geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
-// for(var index in geometry.vertices) 	{
-// 	geometry.vertices[index].x *= Math.random();
-// 	geometry.vertices[index].y *= Math.random();
-// 	geometry.vertices[index].x *= Math.random();
-// }
+
 var material = new THREE.MeshNormalMaterial( { color: 0x00ff00, shininess: 200 } );
 
-var cube = new THREE.Mesh( geometry, material );
-
-var light = new THREE.DirectionalLight( 0xdddddd, 0.8);
-light.position.set(-80,80,80);
-// scene.add( cube );
-scene.add( light);
+// var light = new THREE.DirectionalLight( 0xdddddd, 0.8);
+// light.position.set(-80,80,80);
+// scene.add( light);
 
 camera.position.z = .707;
 camera.position.y = -0.707;
@@ -37,36 +29,26 @@ var render = function () {
 		sup.rotation.y += 0.01;
 	}
 
-	var lerpValue = CONTROLS.lerpSpeed;
-	// sup.rotation.z += 0.01;
-
-	// cube.scale.multiplyScalar(1.001);
-	// light.position.x += 1;
-
-	// sup.geometry.vertices[0].x += 0.01;
 	for(var i in P1) {
 		var current = P1[i];
 		var goal = P1n[i];
-		P1[i] = ((1 - lerpValue) * current + lerpValue * goal);
+		P1[i] = ((1 - CONTROLS.lerpSpeed) * current + CONTROLS.lerpSpeed * goal);
 	}
 	for(var i in P2) {
 		var current = P2[i];
 		var goal = P2n[i];
-		P2[i] = ((1 - lerpValue) * current + lerpValue * goal);
+		P2[i] = ((1 - CONTROLS.lerpSpeed) * current + CONTROLS.lerpSpeed * goal);
 	}
+
 	GenerateMeshVertices(P1, P2);
 	for(var ii = 0; ii < tempVertices.length; ii++) {
 		superGeometry.vertices[ii].lerp(tempVertices[ii], 0.1);
 	}
-	// superGeometry.vertices = VERTICES;
 
 	superGeometry.computeBoundingSphere();
-	// superGeometry.computeFaceNormals();
-	// superGeometry.computeVertexNormals();
 	superGeometry.verticesNeedUpdate = true;
 
 	controls.update();
-
 	renderer.render(scene, camera);
 };
 
@@ -152,7 +134,6 @@ function GenerateMesh() {
 					c = ii * WIDTH;
 				}
 				superGeometry.faces.push( new THREE.Face3( a, b, c));
-				// superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
 			}
 		}
 		// Upward rows
@@ -165,7 +146,6 @@ function GenerateMesh() {
 					b = ii * WIDTH;
 				}
 				superGeometry.faces.push( new THREE.Face3( a, b, c));
-				// superGeometry.faceVertexUvs[0].push( [new THREE.Vector2(0,1), new THREE.Vector2(0,0), new THREE.Vector2(1,1)] );
 			}
 		}
 	}
@@ -174,7 +154,6 @@ function GenerateMesh() {
 		var a = ii;
 		var b = ii + 1;
 		var c = VERTICES.length - 1;
-		// var c = ii + 2;
 		if(ii == VERTICES.length - 2) {
 			b = VERTICES.length - WIDTH - 1;
 		}
@@ -226,9 +205,6 @@ function GenerateMeshVertices(p1, p2) {
 	
 	for(var ii = 0; ii < tempVertices.length; ii++) {
 		tempVertices[ii].multiplyScalar(scale);
-		// if(superGeometry.vertices[ii]) {
-		// 	tempVertices[ii].lerp(superGeometry.vertices[ii], 0.1);
-		// }
 	}
 
 	tempVertices[tempVertices.length - 1].set(tempVertices[0].x, tempVertices[0].y, tempVertices[0].z);	
@@ -242,10 +218,6 @@ scene.add(sup);
 
 CreateGUI = function() {
 	var gui = new dat.GUI();
-	// for(var i in P1n) {
-	// 	f1.add(P1n, i.toString()).min(1).max(50);
-	// 	f2.add(P2n, i.toString()).min(1).max(50);
-	// }
 	gui.add(P1n, 'm').min(0).max(50).name("Lobes");
 	gui.add(P2n, 'm').min(0).max(50).name("Ridges");
 	var f1 = gui.addFolder("Theta");

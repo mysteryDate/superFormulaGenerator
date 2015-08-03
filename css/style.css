@@ -1,6 +1,7 @@
 html, body {
 	height: 100%;
 	width: 100%;
+	background-color: black;
 }
 
 body { 
@@ -12,18 +13,3 @@ canvas#viewer {
 	height: 100% 
 }
 
-/*#GUI {
-	height: 30%;
-    width: 25%;
-    background-color: pink;
-    position: absolute;
-    border-radius: 10%;
-}
-
-.dg.main.a {
-	background-color: pink;
-}*/
-
-.guidat input {
-	font: 20px helvetica;
-}
