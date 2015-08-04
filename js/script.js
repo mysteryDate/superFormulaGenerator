@@ -24,20 +24,32 @@ var superGeometry = new THREE.Geometry();
 var render = function () {
 	requestAnimationFrame( render );
 
+	var slowLerp = 0.05;
+	var fastLerp = 0.8;
+
 	if(CONTROLS.rotate) {
 		sup.rotation.x += 0.01;
 		sup.rotation.y += 0.01;
+		sup.rotation.z += 0.01;
 	}
 
 	for(var i in P1) {
 		var current = P1[i];
 		var goal = P1n[i];
-		P1[i] = ((1 - CONTROLS.lerpSpeed) * current + CONTROLS.lerpSpeed * goal);
+		var lerpSpeed = fastLerp;
+		if(i == "m") {
+			lerpSpeed = slowLerp;
+		}
+		P1[i] = ((1 - lerpSpeed) * current + lerpSpeed * goal);
 	}
 	for(var i in P2) {
 		var current = P2[i];
 		var goal = P2n[i];
-		P2[i] = ((1 - CONTROLS.lerpSpeed) * current + CONTROLS.lerpSpeed * goal);
+		var lerpSpeed = fastLerp;
+		if(i == "m") {
+			lerpSpeed = slowLerp;
+		}
+		P2[i] = ((1 - lerpSpeed) * current + lerpSpeed * goal);
 	}
 
 	GenerateMeshVertices(P1, P2);
@@ -89,8 +101,8 @@ var P1n = {
 };
 
 var P2n = {
-	a : 1,
-	b : 1,
+	a : 1.0,
+	b : 1.0,
 	m : 9.08,
 	n1: 2.2,
 	n2: 0.53,
@@ -100,7 +112,7 @@ var P2n = {
 var P1 = {
 	a : 1,
 	b : 1,
-	m : 2,
+	m : 2.0,
 	n1: 2,
 	n2: 2,
 	n3: 2
@@ -218,7 +230,7 @@ scene.add(sup);
 
 CreateGUI = function() {
 	var gui = new dat.GUI();
-	gui.add(P1n, 'm').min(0).max(50).name("Lobes");
+	gui.add(P1n, 'm').min(0).max(50).step(0.1).name("Lobes");
 	gui.add(P2n, 'm').min(0).max(50).name("Ridges");
 	var f1 = gui.addFolder("Theta");
 	var f2 = gui.addFolder("Phi");
@@ -226,15 +238,15 @@ CreateGUI = function() {
 	f1.add(P1n, 'n2').min(-10).max(10).listen().name("Cos Power");
 	f1.add(P1n, 'b').min(0.1).max(2).name("Sin Multiplier");;
 	f1.add(P1n, 'n3').min(-10).max(10).name("Sin Power");
-	f1.add(P1n, 'n1').min(1).max(100).name("Theta Power");
+	f1.add(P1n, 'n1').min(1).max(10).name("Theta Power");
 	f2.add(P2n, 'a').min(0.1).max(2).name("Cos Multiplier");
 	f2.add(P2n, 'n2').min(-10).max(10).listen().name("Cos Power");
 	f2.add(P2n, 'b').min(0.1).max(2).name("Sin Multiplier");;
 	f2.add(P2n, 'n3').min(-10).max(10).name("Sin Power");
-	f2.add(P2n, 'n1').min(1).max(100).name("Phi Power");
+	f2.add(P2n, 'n1').min(1).max(10).name("Phi Power");
 	f1.open();
 	f2.open();
-	gui.add(CONTROLS, "lerpSpeed").min(0.01).max(1).name("Lerp Speed");
+	// gui.add(CONTROLS, "lerpSpeed").min(0.01).max(1).name("Lerp Speed");
 	gui.add(CONTROLS, "rotate").name("Auto-rotate");
 }
 
