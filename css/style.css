@@ -13,3 +13,22 @@ canvas#viewer {
 	height: 100% 
 }
 
+a#WIKI {
+    position: absolute;
+    bottom: 10px;
+    text-align: center;
+    font-size: large;
+    font-family: helvetica;
+    font-weight: 100;
+    text-decoration: none;
+    width: 100%;
+    color: white;
+}
+
+a:hover {
+	color: pink !important;
+}
+
+a:visited {
+	color: white;
+}
