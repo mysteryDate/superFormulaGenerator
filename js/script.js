@@ -2,7 +2,6 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 var container = document.getElementById("container");
-var renderer = new THREE.WebGLRenderer();
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize( window.innerWidth, window.innerHeight );
 container.appendChild( renderer.domElement );
@@ -11,7 +10,7 @@ $("canvas").attr("id","viewer");
 
 var geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
 
-
+var material = new THREE.MeshNormalMaterial( { color: 0x00ff00, shininess: 200 } );
 
 camera.position.z = .707;
 camera.position.y = -0.707;
@@ -28,9 +27,6 @@ var render = function () {
 		sup.rotation.x += 0.01;
 		sup.rotation.y += 0.01;
 		sup.rotation.z += 0.01;
-		sup.rotation.x += 0.005;
-		sup.rotation.y += 0.005;
-		sup.rotation.z += 0.005;
 	}
 
 	if(CONTROLS.animate){
@@ -95,9 +91,8 @@ for(var ii = 0; ii < HEIGHT; ii++) {
 }
 
 var CONTROLS = {
+	animate: false,
 	rotate : false,
-	lerpSpeed : 0.05
-	animate : false,
 	lerpSpeed : 0.05,
 	animationSpeed : 50000,
 	animateLobes: false,
@@ -109,6 +104,9 @@ var CONTROLS = {
 };
 
 var P1n = {
+	a : 1.0,
+	b : 1.0,
+	m : 11.25,
 	n1: 7.3,
 	n2: 1,
 	n3: 3.31
@@ -140,7 +138,6 @@ var P2 = {
 	n2: 2,
 	n3: 2
 };
-
 
 
 P1n_a =
@@ -341,7 +338,6 @@ CreateGUI = function() {
 	gui.add(CONTROLS, "rotate").name("Auto-rotate");
 	gui.add(CONTROLS, "animate").name("Animate Shape").listen();
 	var f3 = gui.addFolder("Animation Options");
-	// f3.add(CONTROLS, 'animationSpeed').min(0).max(10000).name("Speed").listen();
 	f3.add(CONTROLS, "animateLobes").name("Animate Lobes").listen();
 	f3.add(CONTROLS, "animateRidges").name("Animate Ridges").listen();
 	var l1 = f3.addFolder("Theta");
@@ -379,5 +375,3 @@ P1n.n2 = -1.68;
 window.setTimeout(function(){ 
 	render();  
 }, 0);
-
-
