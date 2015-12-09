@@ -227,30 +227,55 @@ GenerateMesh();
 var sup = new THREE.Mesh(superGeometry, material);
 scene.add(sup);
 
+var Ranges = {
+	m: [0,50],
+	a: [0.1,2],
+	b: [0.1,2],
+	n1:[1,10],
+	n2:[-10,10],
+	n3:[-10,10]
+}
 
+var gui;
 CreateGUI = function() {
-	var gui = new dat.GUI();
-	gui.add(P1n, 'm').min(0).max(50).step(0.1).name("Lobes");
-	gui.add(P2n, 'm').min(0).max(50).name("Ridges");
+	gui = new dat.GUI();
+	gui.add(P1n, 'm').min(0).max(50).listen().step(0.1).name("Lobes");
+	gui.add(P2n, 'm').min(0).max(50).listen().name("Ridges");
 	var f1 = gui.addFolder("Theta");
 	var f2 = gui.addFolder("Phi");
-	f1.add(P1n, 'a').min(0.1).max(2).name("Cos Multiplier");
+	f1.add(P1n, 'a').min(0.1).max(2).listen().name("Cos Multiplier");
 	f1.add(P1n, 'n2').min(-10).max(10).listen().name("Cos Power");
-	f1.add(P1n, 'b').min(0.1).max(2).name("Sin Multiplier");;
-	f1.add(P1n, 'n3').min(-10).max(10).name("Sin Power");
-	f1.add(P1n, 'n1').min(1).max(10).name("Theta Power");
-	f2.add(P2n, 'a').min(0.1).max(2).name("Cos Multiplier");
+	f1.add(P1n, 'b').min(0.1).max(2).listen().name("Sin Multiplier");;
+	f1.add(P1n, 'n3').min(-10).max(10).listen().name("Sin Power");
+	f1.add(P1n, 'n1').min(1).max(10).listen().name("Theta Power");
+	f2.add(P2n, 'a').min(0.1).max(2).listen().name("Cos Multiplier");
 	f2.add(P2n, 'n2').min(-10).max(10).listen().name("Cos Power");
-	f2.add(P2n, 'b').min(0.1).max(2).name("Sin Multiplier");;
-	f2.add(P2n, 'n3').min(-10).max(10).name("Sin Power");
-	f2.add(P2n, 'n1').min(1).max(10).name("Phi Power");
+	f2.add(P2n, 'b').min(0.1).max(2).listen().name("Sin Multiplier");;
+	f2.add(P2n, 'n3').min(-10).max(10).listen().name("Sin Power");
+	f2.add(P2n, 'n1').min(1).max(10).listen().name("Phi Power");
 	f1.open();
 	f2.open();
-	// gui.add(CONTROLS, "lerpSpeed").min(0.01).max(1).name("Lerp Speed");
+	gui.add(window, "Randomize").name("Randomize");
 	gui.add(CONTROLS, "rotate").name("Auto-rotate");
 }
 
 CreateGUI();
+
+function Randomize() {
+	P1n.m  = Math.random() * 50;
+	P1n.a  = (Math.random() * 2) + 0.1;
+	P1n.b  = (Math.random() * 2) + 0.1;
+	P1n.n1 = (Math.random() * 9) + 1;
+	P1n.n2 = (Math.random() * 20) - 10;
+	P1n.n3 = (Math.random() * 20) - 10;
+
+	P2n.m  = Math.random() * 50;
+	P2n.a  = (Math.random() * 2) + 0.1;
+	P2n.b  = (Math.random() * 2) + 0.1;
+	P2n.n1 = (Math.random() * 9) + 1;
+	P2n.n2 = (Math.random() * 20) - 10;
+	P2n.n3 = (Math.random() * 20) - 10;
+}
 
 $(".dg").on("mousedown", function(e){
 	e.stopPropagation();
