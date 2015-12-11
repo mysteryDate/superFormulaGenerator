@@ -2,7 +2,7 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 var container = document.getElementById("container");
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize( window.innerWidth, window.innerHeight );
 container.appendChild( renderer.domElement );
 var controls = new THREE.OrbitControls( camera, renderer.domElement);
@@ -11,10 +11,6 @@ $("canvas").attr("id","viewer");
 var geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
 
 var material = new THREE.MeshNormalMaterial( { color: 0x00ff00, shininess: 200 } );
-
-// var light = new THREE.DirectionalLight( 0xdddddd, 0.8);
-// light.position.set(-80,80,80);
-// scene.add( light);
 
 camera.position.z = .707;
 camera.position.y = -0.707;
@@ -31,6 +27,14 @@ var render = function () {
 		sup.rotation.x += 0.01;
 		sup.rotation.y += 0.01;
 		sup.rotation.z += 0.01;
+	}
+
+	if(CONTROLS.animate){
+		TWEEN.removeAll();
+		animationCheck();
+		TWEEN.update();
+	}else{
+		TWEEN.removeAll();
 	}
 
 	for(var i in P1) {
@@ -87,8 +91,16 @@ for(var ii = 0; ii < HEIGHT; ii++) {
 }
 
 var CONTROLS = {
+	animate: false,
 	rotate : false,
-	lerpSpeed : 0.05
+	lerpSpeed : 0.05,
+	animationSpeed : 50000,
+	animateLobes: false,
+	animateRidges: true,
+	P1n_a: false,
+	P1n_b: true,
+	P2n_a: false,
+	P2n_b: false
 };
 
 var P1n = {
@@ -126,6 +138,73 @@ var P2 = {
 	n2: 2,
 	n3: 2
 };
+
+
+P1n_a =
+    new TWEEN.Tween(P1n)
+    	.to({ a: 2}, CONTROLS.animationSpeed)
+    .easing(TWEEN.Easing.Quadratic.In)
+    .repeat(Infinity)
+    .yoyo(true)
+
+P1n_b =
+    new TWEEN.Tween(P1n)
+    	.to({ b: 2}, CONTROLS.animationSpeed)
+    .easing(TWEEN.Easing.Quadratic.In)
+    .repeat(Infinity)
+    .yoyo(true)
+
+P1n_m =
+    new TWEEN.Tween(P1n)
+    	.to({ m: 50}, CONTROLS.animationSpeed)
+    .easing(TWEEN.Easing.Quadratic.In)
+    .repeat(Infinity)
+    .yoyo(true)
+
+P2n_a =
+    new TWEEN.Tween(P2n)
+    	.to({ a: 2}, CONTROLS.animationSpeed)
+    .easing(TWEEN.Easing.Quadratic.In)
+    .repeat(Infinity)
+    .yoyo(true)
+
+P2n_b =
+    new TWEEN.Tween(P2n)
+    	.to({ b: 2}, CONTROLS.animationSpeed)
+    .easing(TWEEN.Easing.Quadratic.In)
+    .repeat(Infinity)
+    .yoyo(true)
+
+P2n_m =
+    new TWEEN.Tween(P2n)
+    	.to({ m: 50}, CONTROLS.animationSpeed)
+    .easing(TWEEN.Easing.Quadratic.In)
+    .repeat(Infinity)
+    .yoyo(true)
+
+
+function animationCheck(){
+	if(CONTROLS.animateLobes){
+		TWEEN.add(P1n_m);
+	}
+	if(CONTROLS.animateRidges){
+		TWEEN.add(P2n_m);
+	}
+	if(CONTROLS.P1n_a){
+		TWEEN.add(P1n_a);
+	}
+	if(CONTROLS.P1n_b){
+		TWEEN.add(P1n_b);
+	}
+	if(CONTROLS.P2n_a){
+		TWEEN.add(P2n_a);
+	}
+	if(CONTROLS.P2n_b){
+		TWEEN.add(P2n_b);
+	}
+}
+
+
 
 function GenerateMesh() {
 	GenerateMeshVertices(P1, P2);
@@ -257,6 +336,17 @@ CreateGUI = function() {
 	f2.open();
 	gui.add(window, "Randomize").name("Randomize");
 	gui.add(CONTROLS, "rotate").name("Auto-rotate");
+	gui.add(CONTROLS, "animate").name("Animate Shape").listen();
+	var f3 = gui.addFolder("Animation Options");
+	f3.add(CONTROLS, "animateLobes").name("Animate Lobes").listen();
+	f3.add(CONTROLS, "animateRidges").name("Animate Ridges").listen();
+	var l1 = f3.addFolder("Theta");
+	var l2 = f3.addFolder("Phi");
+	l1.add(CONTROLS, "P1n_a").name("Animate Cos Multiplier").listen();
+	l1.add(CONTROLS, "P1n_b").name("Animate Sin Multiplier").listen();
+	l2.add(CONTROLS, "P2n_a").name("Animate Cos Multiplier").listen();
+	l2.add(CONTROLS, "P2n_b").name("Animate Sin Multiplier").listen();
+
 }
 
 CreateGUI();
