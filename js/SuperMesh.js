@@ -1,6 +1,6 @@
-var SuperMesh = function() {
-	this.HEIGHT = 80;
-	this.WIDTH = 80;
+var SuperMesh = function(size) {
+	this.HEIGHT = size;
+	this.WIDTH = size;
 	this.geometry = new THREE.geometry();
 
 	this.P1 = {
