@@ -326,7 +326,7 @@ CreateGUI = function() {
 	f1.add(P1n, 'n2').min(-10).max(10).listen().name("Cos Power");
 	f1.add(P1n, 'b').min(0.1).max(2).listen().name("Sin Multiplier");;
 	f1.add(P1n, 'n3').min(-10).max(10).listen().name("Sin Power");
-	f1.add(P1n, 'n1').min(1).max(10).listen().name("Theta Power");
+	f1.add(P1n, 'n1').min(3).max(20).listen().name("Theta Power");
 	f2.add(P2n, 'a').min(0.1).max(2).listen().name("Cos Multiplier");
 	f2.add(P2n, 'n2').min(-10).max(10).listen().name("Cos Power");
 	f2.add(P2n, 'b').min(0.1).max(2).listen().name("Sin Multiplier");;
