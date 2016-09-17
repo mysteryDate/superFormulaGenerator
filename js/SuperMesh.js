@@ -1,7 +1,8 @@
+// The mesh representing a superformula object
 var SuperMesh = function(size) {
 	this.HEIGHT = size;
 	this.WIDTH = size;
-	this.geometry = new THREE.geometry();
+	this.geometry = new THREE.Geometry();
 
 	this.P1 = {
 		a : 1,

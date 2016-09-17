@@ -17,56 +17,7 @@ camera.position.y = -0.707;
 
 var superGeometry = new THREE.Geometry();
 
-var render = function () {
-	requestAnimationFrame( render );
 
-	var slowLerp = 0.05;
-	var fastLerp = 0.8;
-
-	if(CONTROLS.rotate) {
-		sup.rotation.x += 0.01;
-		sup.rotation.y += 0.01;
-		sup.rotation.z += 0.01;
-	}
-
-	if(CONTROLS.animate){
-		TWEEN.removeAll();
-		animationCheck();
-		TWEEN.update();
-	}else{
-		TWEEN.removeAll();
-	}
-
-	for(var i in P1) {
-		var current = P1[i];
-		var goal = P1n[i];
-		var lerpSpeed = fastLerp;
-		if(i == "m") {
-			lerpSpeed = slowLerp;
-		}
-		P1[i] = ((1 - lerpSpeed) * current + lerpSpeed * goal);
-	}
-	for(var i in P2) {
-		var current = P2[i];
-		var goal = P2n[i];
-		var lerpSpeed = fastLerp;
-		if(i == "m") {
-			lerpSpeed = slowLerp;
-		}
-		P2[i] = ((1 - lerpSpeed) * current + lerpSpeed * goal);
-	}
-
-	GenerateMeshVertices(P1, P2);
-	for(var ii = 0; ii < tempVertices.length; ii++) {
-		superGeometry.vertices[ii].lerp(tempVertices[ii], 0.1);
-	}
-
-	superGeometry.computeBoundingSphere();
-	superGeometry.verticesNeedUpdate = true;
-
-	controls.update();
-	renderer.render(scene, camera);
-};
 
 var WIDTH = 80;
 var HEIGHT = 80;
@@ -302,9 +253,6 @@ function GenerateMeshVertices(p1, p2) {
 	tempVertices[tempVertices.length - 1].multiplyScalar(-1);
 } 
 
-GenerateMesh();
-var sup = new THREE.Mesh(superGeometry, material);
-scene.add(sup);
 
 var Ranges = {
 	m: [0,50],
@@ -349,13 +297,12 @@ CreateGUI = function() {
 
 }
 
-CreateGUI();
 
 function Randomize() {
 	P1n.m  = Math.random() * 50;
 	P1n.a  = (Math.random() * 2) + 0.1;
 	P1n.b  = (Math.random() * 2) + 0.1;
-	P1n.n1 = (Math.random() * 9) + 1;
+	P1n.n1 = (Math.random() * 17) + 3;
 	P1n.n2 = (Math.random() * 20) - 10;
 	P1n.n3 = (Math.random() * 20) - 10;
 
@@ -372,6 +319,65 @@ $(".dg").on("mousedown", function(e){
 });
 
 P1n.n2 = -1.68;
+
+
+GenerateMesh();
+var sup = new THREE.Mesh(superGeometry, material);
+scene.add(sup);
+CreateGUI();
+var superMesh = new SuperMesh(80);
+
+var render = function () {
+	requestAnimationFrame( render );
+
+	var slowLerp = 0.05;
+	var fastLerp = 0.8;
+
+	if(CONTROLS.rotate) {
+		sup.rotation.x += 0.01;
+		sup.rotation.y += 0.01;
+		sup.rotation.z += 0.01;
+	}
+
+	if(CONTROLS.animate){
+		TWEEN.removeAll();
+		animationCheck();
+		TWEEN.update();
+	}else{
+		TWEEN.removeAll();
+	}
+
+	for(var i in P1) {
+		var current = P1[i];
+		var goal = P1n[i];
+		var lerpSpeed = fastLerp;
+		if(i == "m") {
+			lerpSpeed = slowLerp;
+		}
+		P1[i] = ((1 - lerpSpeed) * current + lerpSpeed * goal);
+	}
+	for(var i in P2) {
+		var current = P2[i];
+		var goal = P2n[i];
+		var lerpSpeed = fastLerp;
+		if(i == "m") {
+			lerpSpeed = slowLerp;
+		}
+		P2[i] = ((1 - lerpSpeed) * current + lerpSpeed * goal);
+	}
+
+	GenerateMeshVertices(P1, P2);
+	for(var ii = 0; ii < tempVertices.length; ii++) {
+		superGeometry.vertices[ii].lerp(tempVertices[ii], 0.1);
+	}
+
+	superGeometry.computeBoundingSphere();
+	superGeometry.verticesNeedUpdate = true;
+
+	controls.update();
+	renderer.render(scene, camera);
+};
+
 window.setTimeout(function(){ 
 	render();  
 }, 0);
