@@ -1,31 +1,45 @@
+var State = function(options) {
+	this.a  = options.a  || 1;
+	this.b  = options.b  || 1;
+	this.m  = options.m  || 2;
+	this.n1 = options.n1 || 2;
+	this.n2 = options.n2 || 2;
+	this.n3 = options.n3 || 2;
+}
+
 // The mesh representing a superformula object
 var SuperMesh = function(size) {
 	this.HEIGHT = size;
 	this.WIDTH = size;
 	this.geometry = new THREE.Geometry();
+	var tempVertices 	= [];
+	var VERTICES 	= [];
+	var r1 	= [];
+	var r2 	= [];
+	var thetas 	= [];
+	var phis 	= [];
 
-	this.P1 = {
-		a : 1,
-		b : 1,
-		m : 2,
-		n1: 2,
-		n2: 2,
-		n3: 2
-	};
+	var p1 = new State();
+	var p2 = new State();
 
-	this.P2 = {
-		a : 1,
-		b : 1,
-		m : 2,
-		n1: 2,
-		n2: 2,
-		n3: 2
-	};
+	this.init = function() {
+		for(var ii = 0; ii < WIDTH * HEIGHT + 1; ii++) {
+			VERTICES.push(new THREE.Vector3(0,0,0));
+			tempVertices.push(new THREE.Vector3(0,0,0));
+		}
+		for(var ii = 0; ii < WIDTH; ii++) {
+			r1.push(0);
+			thetas.push(0);
+		}
+		for(var ii = 0; ii < HEIGHT; ii++) {
+			r2.push(0);
+			phis.push(0);
+		}
+	}
 
 	this.update = function() {
 		GenerateMeshVertices();
 		geometry.vertices = VERTICES;
-
 		geometry.verticesNeedUpdate = true;
 	}
 
@@ -120,8 +134,6 @@ var SuperMesh = function(size) {
 		}
 
 		var scale = 0.5 / Math.sqrt(lengthMaxSq);
-
-		
 
 		for(var ii = 0; ii < VERTICES.length; ii++) {
 			VERTICES[ii].multiplyScalar(scale);

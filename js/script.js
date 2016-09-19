@@ -378,6 +378,8 @@ var render = function () {
 	renderer.render(scene, camera);
 };
 
+var sm = new SuperMesh(80);
+sm.init();
 window.setTimeout(function(){ 
 	render();  
 }, 0);
