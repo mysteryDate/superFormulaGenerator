@@ -17,7 +17,8 @@ var SUPERFORMULATOR = (function(){
 		camera.position.set(0, -.707, .707);
 
 		superGeometry.init();
-		superGeometry.p1.set({
+		// A good-looking initial state
+		superGeometry.state.goal.longitudinal.set({
 			a : 1.0,
 			b : 1.0,
 			m : 11.25,
@@ -25,7 +26,7 @@ var SUPERFORMULATOR = (function(){
 			n2: -1.68,
 			n3: 3.31
 		});
-		superGeometry.p2.set({
+		superGeometry.state.goal.latitudinal.set({
 			a : 1.0,
 			b : 1.0,
 			m : 9.08,

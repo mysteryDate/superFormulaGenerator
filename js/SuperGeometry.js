@@ -1,5 +1,5 @@
 "use strict";
-var SuperState = function(options) {
+var FormulaState = function(options) {
 	// Initial values produce a sphere
 	this.a  = options.a  || 1;
 	this.b  = options.b  || 1;
@@ -16,6 +16,42 @@ var SuperState = function(options) {
 		this.n2 = options.n2 || this.n2;
 		this.n3 = options.n3 || this.n3;
 	}
+};
+
+var SuperState = function(options) {
+	this.current = {
+		longitudinal	: new FormulaState({}),
+		latitudinal		: new FormulaState({})
+	};
+	this.goal = {
+		longitudinal	: new FormulaState({}),
+		latitudinal		: new FormulaState({})
+	};
+	this.lerpSpeeds = {
+		a : 0.8,
+		b : 0.8,
+		m : 0.05,
+		n1: 0.8,
+		n2: 0.8,
+		n3: 0.8,
+	};
+	this.speed = options.speed || 1;
+
+	this.bounds = {
+		a : [0.1, 2],
+		b : [0.1, 2],
+		m : [0, 50],
+		n1: [1, 10],
+		n2: [-10, 10],
+		n3: [-10, 10],
+	};
+
+	this.update = function() {
+		for(var i in this.lerpSpeeds) {
+			this.current.longitudinal[i] = THREE.Math.lerp(this.current.longitudinal[i], this.goal.longitudinal[i], this.lerpSpeeds[i] * this.speed);
+			this.current.latitudinal[i] = THREE.Math.lerp(this.current.latitudinal[i], this.goal.latitudinal[i], this.lerpSpeeds[i] * this.speed);
+		}
+	}.bind(this);
 }
 
 // The mesh representing a superformula object
@@ -30,8 +66,7 @@ var SuperGeometry = function(size) {
 	this.width = size;
 	this.height = size;
 	this.geometry = new THREE.Geometry();
-	this.p1 = new SuperState({});
-	this.p2 = new SuperState({});
+	this.state = new SuperState({});
 
 	this.init = function() {
 		for(var ii = 0; ii < this.width * this.height + 1; ii++) {
@@ -58,6 +93,7 @@ var SuperGeometry = function(size) {
 	}.bind(this);
 
 	this.update = function() {
+		this.state.update();
 		calculateVertexPositions();
 		for(var ii = 0; ii < tempVertices.length; ii++) {
 			this.geometry.vertices[ii].lerp(tempVertices[ii], 0.1);
@@ -112,21 +148,23 @@ var SuperGeometry = function(size) {
 	var calculateVertexPositions = function() {
 		// This function runs every frame to calculate vertex position
 		// Generate longitudinal points [-pi to pi] (full circle)
+		var p1 = this.state.current.longitudinal;
 		for (var ii = 0; ii < this.width; ii++) {
 			var t = (2 * Math.PI * ii / this.width) - Math.PI;
-			var r 	=  Math.pow( Math.abs( Math.cos( this.p1.m * t / 4 ) / this.p1.a ), this.p1.n2 );
-			r 		+= Math.pow( Math.abs( Math.sin( this.p1.m * t / 4 ) / this.p1.b ), this.p1.n3 );
-			r 		=  Math.pow( r, -1 / this.p1.n1 );
+			var r 	=  Math.pow( Math.abs( Math.cos( p1.m * t / 4 ) / p1.a ), p1.n2 );
+			r 		+= Math.pow( Math.abs( Math.sin( p1.m * t / 4 ) / p1.b ), p1.n3 );
+			r 		=  Math.pow( r, -1 / p1.n1 );
 			thetas[ii] = t;
 			r1[ii] = r;
 		};
 
 		// Generate latitudinal points [-pi/2 to pi/2] (semi-circle)
+		var p2 = this.state.current.latitudinal;
 		for (var ii = 0; ii < this.height; ii++) {
 			var p = (Math.PI * ii / this.height) - Math.PI/2;
-			var r 	=  Math.pow( Math.abs( Math.cos( this.p2.m * p / 4 ) / this.p2.a ), this.p2.n2 );
-			r 		+= Math.pow( Math.abs( Math.sin( this.p2.m * p / 4 ) / this.p2.b ), this.p2.n3 );
-			r 		=  Math.pow( r, -1 / this.p2.n1 );
+			var r 	=  Math.pow( Math.abs( Math.cos( p2.m * p / 4 ) / p2.a ), p2.n2 );
+			r 		+= Math.pow( Math.abs( Math.sin( p2.m * p / 4 ) / p2.b ), p2.n3 );
+			r 		=  Math.pow( r, -1 / p2.n1 );
 			phis[ii] = p;
 			r2[ii] = r;
 		}
@@ -153,4 +191,4 @@ var SuperGeometry = function(size) {
 		// Seal the top
 		tempVertices[tempVertices.length - 1].copy(tempVertices[0]).multiplyScalar(-1);
 	}.bind(this);
-}
+};
