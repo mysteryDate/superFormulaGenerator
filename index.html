@@ -20,17 +20,69 @@
 	<script type="text/javascript" src="includes/dat.gui.min.js"></script>
 	<script type="text/javascript" src="includes/Tween.js"></script>
 	<!-- Haven't gotten up-to-date Three.js working yet TODO -->
-	<script type="text/javascript" src="includes/three.min.js"></script>
+	<script type="text/javascript" src="includes/three.js"></script>
 	<script type="text/javascript" src="includes/orbitControls.js"></script>
 
 	<!-- Scripts -->
 	<script type="text/javascript" src="js/SuperMesh.js"></script>
-	<script type="text/javascript" src="js/script.js"></script>
+	<!-- <script type="text/javascript" src="js/script.js"></script> -->
 	<script>
-		$(function(){
-			
-		});
+		// $(function(){
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+			camera.position.set(0, -.707, .707);
+			var container = document.getElementById("container");
+			var renderer = new THREE.WebGLRenderer({ antialias: true });
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			container.appendChild( renderer.domElement );
+			var controls = new THREE.OrbitControls( camera, renderer.domElement);
+
+			var superMesh = new SuperMesh(80);
+			superMesh.init();
+
+			var mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
+			var mesh = new THREE.Mesh(superMesh.geometry, mat);
+			scene.add(mesh);
+
+			superMesh.p1.set({
+				a : 1.0,
+				b : 1.0,
+				m : 11.25,
+				n1: 7.3,
+				n2: -1.68,
+				n3: 3.31
+			});
+
+			superMesh.p2.set({
+				a : 1.0,
+				b : 1.0,
+				m : 9.08,
+				n1: 2.2,
+				n2: 0.53,
+				n3: 2.02
+			});
+
+			var box = new THREE.BoxHelper( mesh, 0xffff00 );
+			scene.add( box );
+
+
+			var render = function () {
+				requestAnimationFrame( render );
+				superMesh.update();
+				controls.update();
+				renderer.render(scene, camera);
+			}
+
+			var m2 = new THREE.Mesh( new THREE.SphereGeometry(1), mat);
+			// scene.add(m2);
+
+			var controls = new THREE.OrbitControls( camera, renderer.domElement);
+
+			window.setTimeout(function(){
+				render();
+			}, 0);
+		// });
 	</script>
-	
+
 </body>
 </html>
