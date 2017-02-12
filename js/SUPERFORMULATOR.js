@@ -4,47 +4,52 @@ var SUPERFORMULATOR = (function(){
 	// Variables
 	// --------------------
 	var scene 		= new THREE.Scene(),
-		camera 		= new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 ),
-		container 	= document.getElementById("container"),
-		renderer 	= new THREE.WebGLRenderer({ antialias: true }),
-		controls 	= new THREE.OrbitControls( camera, renderer.domElement),
-		geometry 	= new THREE.BoxGeometry( 0.5, 0.5, 0.5 ),
-		superMesh   = new SuperMesh(80,80);
+			camera 		= new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 ),
+			container = document.getElementById("container"),
+			renderer 	= new THREE.WebGLRenderer({ antialias: true }),
+			controls 	= new THREE.OrbitControls( camera, renderer.domElement),
+			superGeometry = new SuperGeometry(80,80);
 	// ---------------------
 
-	// ---------------------
-	// Options
-	// ---------------------
-		solid_border = true, // Do planets reflect off the border?
-	// ---------------------
-		paper,               // The canvas
-		Planets      = [],   // An array containing all Planets
+	function init() {
+		container.appendChild( renderer.domElement );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		camera.position.set(0, -.707, .707);
 
-		windowWidth  = $(window).width(),
-		windowHeight = $(window).height(),
+		superGeometry.init();
+		superGeometry.p1.set({
+			a : 1.0,
+			b : 1.0,
+			m : 11.25,
+			n1: 7.3,
+			n2: -1.68,
+			n3: 3.31
+		});
+		superGeometry.p2.set({
+			a : 1.0,
+			b : 1.0,
+			m : 9.08,
+			n1: 2.2,
+			n2: 0.53,
+			n3: 2.02
+		});
 
-		looping      = false,
-		lastRequest;
-		// accelerationLines = false;
+		scene.add(new THREE.Mesh(superGeometry.geometry,
+			new THREE.MeshNormalMaterial()));
+	}
 
-	function loop() {
-		looping = true;
-		update();
-		draw();
-		queue();
+	function render() {
+		requestAnimationFrame( render );
+		superGeometry.update();
+		controls.update();
+		renderer.render(scene, camera);
 	}
 
 	return {
-		TIME_STEP    	: TIME_STEP,
-		loop         	: loop,
-		looping      	: looping,
-		isLooping	 	: isLooping,
-		stopLoop     	: stopLoop,
-		clear        	: clear,
-		create_planet	: create_planet,
-		solid_border	: solid_border,
-		paper        	: paper,
-		seed 			: seed,
-		Planets 		: Planets
+		superGeometry : superGeometry,
+		camera 				: camera,
+		scene 				: scene,
+		init 					: init,
+		render 				: render,
 	}
 })();
