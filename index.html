@@ -1,60 +1,63 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-	<!-- Stylesheet -->
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<!-- For sites like reddit to get a good thumbnail -->
-	<meta property="og:image" content="http://mysterydate.github.io/superFormulaGenerator/thumbnail.jpg" />
 
-	<title>SUPERFORMULA!</title>
+<head>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <!-- For sites like reddit to get a good thumbnail -->
+  <meta property="og:image" content="http://mysterydate.github.io/superFormulaGenerator/thumbnail.jpg" />
+
+  <title>SUPERFORMULA!</title>
 </head>
+
 <body>
 
-	<!-- Main screen -->
-	<div id="container"></div>
-	<!-- Wiki link -->
-	<a id="WIKI" href="https://en.wikipedia.org/wiki/Superformula">en.wikipedia.org/wiki/Superformula</a>
+  <!-- Main screen -->
+  <div id="container"></div>
+  <!-- Wiki link -->
+  <a id="WIKI" href="https://en.wikipedia.org/wiki/Superformula">en.wikipedia.org/wiki/Superformula</a>
 
-	<!-- JS Libraries -->
-	<script type="text/javascript" src="includes/jquery.min.js"></script>
-	<script type="text/javascript" src="includes/dat.gui.min.js"></script>
-	<script type="text/javascript" src="includes/Tween.js"></script>
-	<script type="text/javascript" src="includes/three.js"></script>
-	<script type="text/javascript" src="includes/orbitControls.js"></script>
+  <!-- JS Libraries -->
+  <script type="text/javascript" src="includes/jquery.min.js"></script>
+  <script type="text/javascript" src="includes/dat.gui.min.js"></script>
+  <script type="text/javascript" src="includes/Tween.js"></script>
+  <script type="text/javascript" src="includes/three.js"></script>
+  <script type="text/javascript" src="includes/orbitControls.js"></script>
 
-	<!-- Scripts -->
-	<script type="text/javascript" src="js/SuperGeometry.js"></script>
-	<script type="text/javascript" src="js/SUPERFORMULATOR.js"></script>
-	<!-- <script type="text/javascript" src="js/script.js"></script> -->
-	<script>
-		$(function(){
-			SUPERFORMULATOR.init();
+  <!-- Scripts -->
+  <script type="text/javascript" src="js/SuperGeometry.js"></script>
+  <script type="text/javascript" src="js/SUPERFORMULATOR.js"></script>
+  <!-- <script type="text/javascript" src="js/script.js"></script> -->
+  <script>
+    $(function() {
+      SUPERFORMULATOR.init();
 
-			// GUI stuff TODO extract
-			// ------------------------
-			var gui = new dat.GUI();
-			var state = SUPERFORMULATOR.superGeometry.state;
-			var f1 = gui.addFolder("longitudinal");
-			var f2 = gui.addFolder("latitudinal");
-		  for(control in state.lerpSpeeds) {
-		    f1.add(state.goal.longitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
-		    f2.add(state.goal.latitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
-		  };
-			f1.open();
-			f2.open();
-			gui.add(state, "randomize").name("Randomize");
+      // GUI stuff TODO extract
+      // ------------------------
+      var gui = new dat.GUI();
+      var state = SUPERFORMULATOR.superGeometry.state;
+      var f1 = gui.addFolder("longitudinal");
+      var f2 = gui.addFolder("latitudinal");
+      state.keys.forEach(function(control) {
+        f1.add(state.goal.longitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
+        f2.add(state.goal.latitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
+      });
+      f1.open();
+      f2.open();
+      gui.add(state, "randomize").name("randomize");
 
-			// Don't move camera for gui interactions
-			$(".dg").on("mousedown", function(e){
-				e.stopPropagation();
-			});
-			// -----------------------
+      // Don't move camera for gui interactions
+      $(".dg").on("mousedown", function(e) {
+        e.stopPropagation();
+      });
+      // -----------------------
 
-			window.setTimeout(function(){
-				SUPERFORMULATOR.render();
-			}, 0);
-		});
-	</script>
+      window.setTimeout(function() {
+        SUPERFORMULATOR.render();
+      }, 0);
+    });
+  </script>
 
 </body>
+
 </html>
