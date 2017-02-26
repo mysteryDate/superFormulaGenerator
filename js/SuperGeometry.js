@@ -1,4 +1,20 @@
 "use strict";
+// TODO extract this somewhere
+// --------------
+var STATE_DATA = {
+	'm'  : {'defaultValue': 1, 'lerpSpeed': 0.05, 'bounds': [0, 50]},
+	'a'  : {'defaultValue': 1, 'lerpSpeed': 0.8, 'bounds': [0.1, 2]},
+	'b'  : {'defaultValue': 1, 'lerpSpeed': 0.8, 'bounds': [0.1, 2]},
+	'n1' : {'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [1, 10]},
+	'n2' : {'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [-10, 10]},
+	'n3' : {'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [-10, 10]},
+};
+
+var randomWithin = function(min, max) {
+  return min + ((max - min) * Math.random());
+};
+// --------------
+
 var FormulaState = function(options) {
 	// Initial values produce a sphere
 	this.a  = options.a  || 1;
@@ -19,6 +35,8 @@ var FormulaState = function(options) {
 };
 
 var SuperState = function(options) {
+	this.keys = ['m', 'a', 'b', 'n1', 'n2', 'n3'];
+
 	this.current = {
 		longitudinal	: new FormulaState({}),
 		latitudinal		: new FormulaState({})
@@ -35,8 +53,6 @@ var SuperState = function(options) {
 		n2: 0.8,
 		n3: 0.8,
 	};
-	this.speed = options.speed || 1;
-
 	this.bounds = {
 		a : [0.1, 2],
 		b : [0.1, 2],
@@ -45,6 +61,15 @@ var SuperState = function(options) {
 		n2: [-10, 10],
 		n3: [-10, 10],
 	};
+	this.speed = options.speed || 1;
+
+
+	this.randomize = function() {
+		for(var i in this.lerpSpeeds) {
+			this.goal.longitudinal[i] = randomWithin(this.bounds[i][0], this.bounds[i][1]);
+			this.goal.latitudinal[i] = randomWithin(this.bounds[i][0], this.bounds[i][1]);
+		}
+	}.bind(this);
 
 	this.update = function() {
 		for(var i in this.lerpSpeeds) {

@@ -30,15 +30,23 @@
 		$(function(){
 			SUPERFORMULATOR.init();
 
+			// GUI stuff TODO extract
+			// ------------------------
 			var gui = new dat.GUI();
 			var state = SUPERFORMULATOR.superGeometry.state;
-		  // TODO, I need to structure this better, lerpSpeeds is non-obvious
 		  for(control in state.lerpSpeeds) {
 		    gui.add(state.goal.longitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
 		  }
 		  for(control in state.lerpSpeeds) {
 		    gui.add(state.goal.latitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
 		  }
+			gui.add(state, "randomize").name("Randomize");
+
+			// Don't move camera for gui interactions
+			$(".dg").on("mousedown", function(e){
+				e.stopPropagation();
+			});
+			// -----------------------
 
 			window.setTimeout(function(){
 				SUPERFORMULATOR.render();
