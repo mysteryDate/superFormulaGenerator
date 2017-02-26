@@ -2,12 +2,13 @@
 // TODO extract this somewhere
 // --------------
 var STATE_DATA = {
-	'm'  : {'defaultValue': 1, 'lerpSpeed': 0.05, 'bounds': [0, 50]},
-	'a'  : {'defaultValue': 1, 'lerpSpeed': 0.8, 'bounds': [0.1, 2]},
-	'b'  : {'defaultValue': 1, 'lerpSpeed': 0.8, 'bounds': [0.1, 2]},
-	'n1' : {'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [1, 10]},
-	'n2' : {'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [-10, 10]},
-	'n3' : {'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [-10, 10]},
+	// Initial values produce a sphere
+	'm'  : {'displayName': 'lobes', 'defaultValue': 1, 'lerpSpeed': 0.05, 'bounds': [0, 50]},
+	'a'  : {'displayName': 'cosine multiplier', 'defaultValue': 1, 'lerpSpeed': 0.8, 'bounds': [0.1, 2]},
+	'b'  : {'displayName': 'sine multiplier', 'defaultValue': 1, 'lerpSpeed': 0.8, 'bounds': [0.1, 2]},
+	'n1' : {'displayName': 'total power', 'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [1, 10]},
+	'n2' : {'displayName': 'cosine power', 'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [-10, 10]},
+	'n3' : {'displayName': 'sine power', 'defaultValue': 2, 'lerpSpeed': 0.8, 'bounds': [-10, 10]},
 };
 
 var randomWithin = function(min, max) {
@@ -15,66 +16,55 @@ var randomWithin = function(min, max) {
 };
 // --------------
 
-var FormulaState = function(options) {
-	// Initial values produce a sphere
-	this.m  = options.m  || 2;
-	this.a  = options.a  || 1;
-	this.b  = options.b  || 1;
-	this.n1 = options.n1 || 2;
-	this.n2 = options.n2 || 2;
-	this.n3 = options.n3 || 2;
+var FormulaState = function(values) {
+	for(var control in values) {
+		this[control] = values[control];
+	}
 
-	this.set = function(options) {
-		this.m  = options.m  || this.m;
-		this.a  = options.a  || this.a;
-		this.b  = options.b  || this.b;
-		this.n1 = options.n1 || this.n1;
-		this.n2 = options.n2 || this.n2;
-		this.n3 = options.n3 || this.n3;
+	this.set = function(values) {
+		for(var control in values) {
+			this[control] = values[control];
+		}
 	}
 };
 
-var SuperState = function(options) {
-	this.keys = ['m', 'a', 'b', 'n1', 'n2', 'n3'];
+var SuperState = function(stateData) {
+
+	for(var key in stateData) {
+		if(!this.keys)
+			this.keys = [];
+		this.keys.push(key);
+
+		for(var feature in stateData[key]) {
+			if(!this[feature])
+				this[feature] = {};
+			this[feature][key] = stateData[key][feature];
+		}
+	}
 
 	this.current = {
-		longitudinal	: new FormulaState({}),
-		latitudinal		: new FormulaState({})
+		longitudinal	: new FormulaState(this.defaultValue),
+		latitudinal		: new FormulaState(this.defaultValue)
 	};
 	this.goal = {
-		longitudinal	: new FormulaState({}),
-		latitudinal		: new FormulaState({})
+		longitudinal	: new FormulaState(this.defaultValue),
+		latitudinal		: new FormulaState(this.defaultValue)
 	};
-	this.lerpSpeeds = {
-		a : 0.8,
-		b : 0.8,
-		m : 0.05,
-		n1: 0.8,
-		n2: 0.8,
-		n3: 0.8,
-	};
-	this.bounds = {
-		a : [0.1, 2],
-		b : [0.1, 2],
-		m : [0, 50],
-		n1: [1, 10],
-		n2: [-10, 10],
-		n3: [-10, 10],
-	};
+
 	this.speed = options.speed || 1;
 
 	this.randomize = function() {
-		for(var i in this.lerpSpeeds) {
+		this.keys.forEach(function(i) {
 			this.goal.longitudinal[i] = randomWithin(this.bounds[i][0], this.bounds[i][1]);
 			this.goal.latitudinal[i] = randomWithin(this.bounds[i][0], this.bounds[i][1]);
-		}
+		}.bind(this));
 	}.bind(this);
 
 	this.update = function() {
-		for(var i in this.lerpSpeeds) {
-			this.current.longitudinal[i] = THREE.Math.lerp(this.current.longitudinal[i], this.goal.longitudinal[i], this.lerpSpeeds[i] * this.speed);
-			this.current.latitudinal[i] = THREE.Math.lerp(this.current.latitudinal[i], this.goal.latitudinal[i], this.lerpSpeeds[i] * this.speed);
-		}
+		this.keys.forEach(function(i) {
+			this.current.longitudinal[i] = THREE.Math.lerp(this.current.longitudinal[i], this.goal.longitudinal[i], this.lerpSpeed[i] * this.speed);
+			this.current.latitudinal[i] = THREE.Math.lerp(this.current.latitudinal[i], this.goal.latitudinal[i], this.lerpSpeed[i] * this.speed);
+		}.bind(this));
 	}.bind(this);
 }
 
@@ -90,7 +80,7 @@ var SuperGeometry = function(size) {
 	this.width = size;
 	this.height = size;
 	this.geometry = new THREE.Geometry();
-	this.state = new SuperState({});
+	this.state = new SuperState(STATE_DATA);
 
 	this.init = function() {
 		for(var ii = 0; ii < this.width * this.height + 1; ii++) {
