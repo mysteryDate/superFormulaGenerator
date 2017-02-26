@@ -34,12 +34,14 @@
 			// ------------------------
 			var gui = new dat.GUI();
 			var state = SUPERFORMULATOR.superGeometry.state;
+			var f1 = gui.addFolder("longitudinal");
+			var f2 = gui.addFolder("latitudinal");
 		  for(control in state.lerpSpeeds) {
-		    gui.add(state.goal.longitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
-		  }
-		  for(control in state.lerpSpeeds) {
-		    gui.add(state.goal.latitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
-		  }
+		    f1.add(state.goal.longitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
+		    f2.add(state.goal.latitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
+		  };
+			f1.open();
+			f2.open();
 			gui.add(state, "randomize").name("Randomize");
 
 			// Don't move camera for gui interactions

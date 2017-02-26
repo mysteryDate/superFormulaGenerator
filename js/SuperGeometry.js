@@ -17,17 +17,17 @@ var randomWithin = function(min, max) {
 
 var FormulaState = function(options) {
 	// Initial values produce a sphere
+	this.m  = options.m  || 2;
 	this.a  = options.a  || 1;
 	this.b  = options.b  || 1;
-	this.m  = options.m  || 2;
 	this.n1 = options.n1 || 2;
 	this.n2 = options.n2 || 2;
 	this.n3 = options.n3 || 2;
 
 	this.set = function(options) {
+		this.m  = options.m  || this.m;
 		this.a  = options.a  || this.a;
 		this.b  = options.b  || this.b;
-		this.m  = options.m  || this.m;
 		this.n1 = options.n1 || this.n1;
 		this.n2 = options.n2 || this.n2;
 		this.n3 = options.n3 || this.n3;
@@ -62,7 +62,6 @@ var SuperState = function(options) {
 		n3: [-10, 10],
 	};
 	this.speed = options.speed || 1;
-
 
 	this.randomize = function() {
 		for(var i in this.lerpSpeeds) {
