@@ -35,12 +35,12 @@
       // GUI stuff TODO extract
       // ------------------------
       var gui = new dat.GUI();
-      var state = SUPERFORMULATOR.superGeometry.state;
+      var state = SUPERFORMULATOR.state;
       var f1 = gui.addFolder("longitudinal");
       var f2 = gui.addFolder("latitudinal");
       state.keys.forEach(function(control) {
-        f1.add(state.goal.longitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
-        f2.add(state.goal.latitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).listen();
+        f1.add(state.goal.longitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).name(state.displayName[control]);
+        f2.add(state.goal.latitudinal, control).min(state.bounds[control][0]).max(state.bounds[control][1]).name(state.displayName[control]);
       });
       f1.open();
       f2.open();

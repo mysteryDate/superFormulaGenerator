@@ -4,13 +4,11 @@ var SUPERFORMULATOR = (function () {
   // Variables
   // --------------------
   var scene = new THREE.Scene(),
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
-    container = document.getElementById("container"),
-    renderer = new THREE.WebGLRenderer({
-      antialias: true
-    }),
-    controls = new THREE.OrbitControls(camera, renderer.domElement),
-    superGeometry = new SuperGeometry(80, 80);
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
+      container = document.getElementById("container"),
+      renderer = new THREE.WebGLRenderer({antialias: true}),
+      controls = new THREE.OrbitControls(camera, renderer.domElement),
+      superGeometry = new SuperGeometry(80, 80);
   // ---------------------
 
   function init() {
@@ -49,7 +47,7 @@ var SUPERFORMULATOR = (function () {
   }
 
   return {
-    superGeometry: superGeometry,
+    state: superGeometry.state,
     camera: camera,
     scene: scene,
     init: init,
