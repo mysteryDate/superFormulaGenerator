@@ -8,7 +8,7 @@ var SUPERFORMULATOR = (function () {
       container = document.getElementById("container"),
       renderer = new THREE.WebGLRenderer({antialias: true}),
       controls = new THREE.OrbitControls(camera, renderer.domElement),
-      superGeometry = new SuperGeometry(80, 80);
+      superGeometry = new SuperGeometry(300, 300);
   // ---------------------
 
   function init() {
