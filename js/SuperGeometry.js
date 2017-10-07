@@ -60,7 +60,7 @@ var FormulaState = function (values) {
 
 var SuperState = function (stateData) {
   this.speed = 1;
-  
+
   for (var key in stateData) {
     if (!this.keys)
       this.keys = [];
@@ -211,15 +211,6 @@ var SuperGeometry = function (size) {
       r = Math.pow(r, -1 / p2.n1);
       phis[ii] = p;
       r2[ii] = r;
-
-    }
-
-    for (var ii = 0; ii < this.height/2; ii++) {
-      // r2[ii] = THREE.Math.lerp(1, r2[ii], ii/this.height * 2);
-      r2[ii] = 0;
-      // r2[ii] = 1;
-      // var y = ii / (this.height/2);
-      // r2[ii] = Math.sqrt(1 - 2*y + 2*y*y);
     }
 
     var lengthMaxSq = 0;
