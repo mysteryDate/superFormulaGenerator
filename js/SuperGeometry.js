@@ -84,6 +84,7 @@ var SuperState = function (stateData) {
 
 
   this.randomize = function () {
+    mixpanel.track("Randomize");
     this.keys.forEach(function (i) {
       this.goal.longitudinal[i] = randomWithin(this.bounds[i][0], this.bounds[i][1]);
       this.goal.latitudinal[i] = randomWithin(this.bounds[i][0], this.bounds[i][1]);
